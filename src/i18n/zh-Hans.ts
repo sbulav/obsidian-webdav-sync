@@ -51,9 +51,9 @@ const translation: typeof en = {
 			name: '在移动端通知中显示同步状态',
 			desc: '同步期间持续显示通知，并在同步结束两秒后自动隐藏',
 		},
-		backupWarning: {
-			name: '备份提醒',
-			desc: '⚠️ 请注意：同步过程会修改或删除本地文件，建议在同步前备份重要文件。',
+		tips: {
+			name: '提示',
+			desc: '⚠️ 同步过程可能会修改或删除本地文件。请在同步前备份重要文件。',
 		},
 		conflictStrategy: {
 			name: '冲突解决策略',
@@ -282,6 +282,13 @@ const translation: typeof en = {
 		hoursAgo: '{{count}}小时前',
 		daysAgo: '{{count}}天前',
 		longAgo: '很久前',
+    },
+    dirSelector: {
+		currentPath: '当前路径：{{path}}',
+		goBack: '返回',
+		newFolder: '新建文件夹',
+		cancel: '取消',
+		confirm: '确认',
 	},
 };
 

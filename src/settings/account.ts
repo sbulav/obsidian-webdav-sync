@@ -23,8 +23,9 @@ export default class AccountSettings extends BaseSettings {
 		let remoteBaseDirText: TextComponent | undefined;
 		this.containerEl.empty();
 		new Setting(this.containerEl)
-			.setName(t('settings.backupWarning.name'))
-			.setDesc(t('settings.backupWarning.desc'));
+			.setName(t('settings.tips.name'))
+			.setDesc(t('settings.tips.desc'))
+			.setClass('pre-line');
 
 		new Setting(this.containerEl)
 			.setName(t('settings.serverUrl.name'))

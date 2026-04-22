@@ -1,13 +1,6 @@
+import type { ConflictStrategy, SyncMode, UnmergeableStrategy } from '~/settings';
 import type { RecordStatsMap, StatsMap, StatModel, FileStatModel, FolderStatModel } from '~/types';
-import { ConflictStrategy, SyncMode, UnmergeableStrategy } from '~/settings';
 import { BaseTask } from '../tasks/task.interface';
-
-export interface SyncDecisionSettings {
-	conflictStrategy: ConflictStrategy;
-	unmergeableStrategy: UnmergeableStrategy;
-	useGitStyle: boolean;
-	syncMode: SyncMode;
-}
 
 export interface TaskOptions {
 	remotePath: string;
@@ -37,16 +30,15 @@ export interface OptionsWithBothStats extends TaskOptions {
 	remote: StatModel;
 }
 
-export interface MergeTaskOptions extends TaskOptions {
+export interface OptionsWithBothFileStats extends TaskOptions {
 	local: FileStatModel;
 	remote: FileStatModel;
-	useGitStyle: boolean;
 }
 
 export interface TaskFactory {
 	createPullTask(options: OptionsWithRemoteFileStat): BaseTask<OptionsWithRemoteFileStat>;
 	createPushTask(options: OptionsWithLocalFileStat): BaseTask<OptionsWithLocalFileStat>;
-	createMergeTask(options: MergeTaskOptions): BaseTask<OptionsWithBothStats>;
+	createMergeTask(options: OptionsWithBothFileStats): BaseTask<OptionsWithBothFileStats>;
 	createRemoveLocalTask(options: TaskOptions): BaseTask;
 	createRemoveRemoteTask(options: TaskOptions): BaseTask;
 	createMkdirLocalTask(
@@ -60,10 +52,14 @@ export interface TaskFactory {
 }
 
 export interface SyncDecisionInput {
-	settings: SyncDecisionSettings;
 	currentLocalStats: StatsMap;
 	currentRemoteStats: StatsMap;
 	records: RecordStatsMap;
 	remoteBaseDir: string;
 	taskFactory: TaskFactory;
+	settings: {
+		syncMode: SyncMode;
+		conflictStrategy: ConflictStrategy;
+		unmergeableStrategy: UnmergeableStrategy;
+	};
 }

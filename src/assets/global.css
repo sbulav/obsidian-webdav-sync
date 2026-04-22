@@ -114,3 +114,13 @@ input.success {
 .m-top-1 {
 	margin-top: 1em;
 }
+
+@container (max-width: 340px) {
+	.numeric-toggle {
+		flex-direction: column;
+	}
+}
+
+.is-phone .numeric-toggle {
+	flex-direction: column;
+}

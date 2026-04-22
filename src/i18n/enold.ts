@@ -49,9 +49,9 @@ export default {
 			name: 'Show sync status in mobile notification',
 			desc: 'Keep a mobile notice visible during sync and hide it two seconds after sync ends',
 		},
-		backupWarning: {
-			name: 'Backup warning',
-			desc: '⚠️ Note: sync process will modify or delete local files. Please backup important files before syncing.',
+		tips: {
+			name: 'Tips',
+			desc: '⚠️ Sync process will modify or delete local files. Please backup important files before syncing.',
 		},
 		conflictStrategy: {
 			name: 'Conflict resolution strategy',
@@ -282,5 +282,12 @@ export default {
 		hoursAgo: '{{count}}h ago',
 		daysAgo: '{{count}}d ago',
 		longAgo: 'Long ago',
+	},
+	dirSelector: {
+		currentPath: 'Current path: {{path}}',
+		goBack: 'Go back',
+		newFolder: 'New folder',
+		cancel: 'Cancel',
+		confirm: 'Confirm',
 	},
 };

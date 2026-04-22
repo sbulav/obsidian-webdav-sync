@@ -20,7 +20,6 @@ function createUnitConverter<T extends string>(config: UnitConfig<T>) {
 			if (!unitMap.has(rawUnit)) return undefined;
 			return num * (unitMap.get(rawUnit) as number);
 		},
-
 		format(value: number): string {
 			let idx = units.length - 1;
 			while (idx > 0 && value < multipliers[idx]) idx--;

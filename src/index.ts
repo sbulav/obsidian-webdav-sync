@@ -100,7 +100,7 @@ export default class WebDAVSyncPlugin extends Plugin {
 		},
 		maxThroughputConcurrency: {
 			enabled: true,
-			value: 104_857_600,
+			value: 52_428_800,
 		},
 		useFastSyncOnLocalChange: true,
 	};

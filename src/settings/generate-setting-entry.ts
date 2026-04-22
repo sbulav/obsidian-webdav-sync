@@ -33,18 +33,9 @@ export default function generateSettingEntry({
 }) {
 	let textComponent: TextComponent;
 	new Setting(container)
+		.setClass('numeric-toggle')
 		.setName(name)
 		.setDesc(desc)
-		.addToggle((toggle) => {
-			toggle.setValue(field.enabled);
-			toggle.onChange((value) => {
-				if (value !== field.enabled) {
-					field.enabled = value;
-					void saveSettings();
-					textComponent.setDisabled(!field.enabled);
-				}
-			});
-		})
 		.addText((text) => {
 			textComponent = text;
 			text.setPlaceholder(placeholder).setValue(format(field.value, type));
@@ -68,6 +59,16 @@ export default function generateSettingEntry({
 				text.inputEl.value = format(field.value, type);
 			});
 			text.setDisabled(!field.enabled);
+		})
+		.addToggle((toggle) => {
+			toggle.setValue(field.enabled);
+			toggle.onChange((value) => {
+				if (value !== field.enabled) {
+					field.enabled = value;
+					void saveSettings();
+					textComponent.setDisabled(!field.enabled);
+				}
+			});
 		});
 }
 

@@ -4,6 +4,30 @@ vi.mock('~/i18n', () => ({
 	default: (key: string) => key,
 }));
 
+vi.mock('~/settings', () => ({
+	SyncMode: {
+		STRICT: 'strict',
+		LOOSE: 'loose',
+	},
+	ConflictStrategy: {
+		DiffMatchPatch: 'diffMatchPatch',
+		LatestTimeStamp: 'latestTimestamp',
+		KeepLocal: 'keepLocal',
+		KeepRemote: 'keepRemote',
+		Skip: 'skip',
+	},
+	UnmergeableStrategy: {
+		LatestTimeStamp: 'latestTimestamp',
+		KeepLocal: 'keepLocal',
+		KeepRemote: 'keepRemote',
+		Skip: 'skip',
+	},
+	useSettings: async () => ({
+		useGitStyle: false,
+		maxThroughputConcurrency: { enabled: false, value: 0 },
+	}),
+}));
+
 import MkdirLocalTask from '~/sync/tasks/mkdir-local.task';
 import MkdirRemoteTask from '~/sync/tasks/mkdir-remote.task';
 import PullTask from '~/sync/tasks/pull.task';

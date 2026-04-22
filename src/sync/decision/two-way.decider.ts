@@ -8,7 +8,7 @@ import { useSettings } from '~/settings';
 import { SyncRunKind } from '~/types';
 import type { SyncEngine } from '..';
 import type {
-	MergeTaskOptions,
+	OptionsWithBothFileStats,
 	OptionsWithBothStats,
 	OptionsWithLocalFileStat,
 	OptionsWithLocalFolderStat,
@@ -39,10 +39,6 @@ export default class TwoWaySyncDecider {
 
 	get webdav() {
 		return this.sync.webdav;
-	}
-
-	get settings() {
-		return this.sync.settings;
 	}
 
 	get vault() {
@@ -96,7 +92,7 @@ export default class TwoWaySyncDecider {
 				new PullTask({ ...commonTaskOptions, ...options }),
 			createPushTask: (options: OptionsWithLocalFileStat) =>
 				new PushTask({ ...commonTaskOptions, ...options }),
-			createMergeTask: (options: MergeTaskOptions) =>
+			createMergeTask: (options: OptionsWithBothFileStats) =>
 				new MergeTask({ ...commonTaskOptions, ...options }),
 			createRemoveLocalTask: (options: TaskOptions) =>
 				new RemoveLocalTask({ ...commonTaskOptions, ...options }),
@@ -114,10 +110,9 @@ export default class TwoWaySyncDecider {
 
 		const decisionInput: SyncDecisionInput = {
 			settings: {
-				conflictStrategy: this.settings.conflictStrategy,
-				useGitStyle: this.settings.useGitStyle,
-				syncMode: this.settings.syncMode,
-				unmergeableStrategy: this.settings.unmergeableStrategy,
+				syncMode: this.sync.settings.syncMode,
+				conflictStrategy: this.sync.settings.conflictStrategy,
+				unmergeableStrategy: this.sync.settings.unmergeableStrategy,
 			},
 			currentLocalStats,
 			currentRemoteStats,

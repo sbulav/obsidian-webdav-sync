@@ -1,4 +1,5 @@
-import { arrayBufferToText } from '~/platform/binary';
+import { arrayBufferToText, toArrayBuffer, type BinaryLike } from '~/platform/binary';
+import { useSettings } from '~/settings';
 import { getRemoteContent } from '~/utils/get-content';
 import logger from '~/utils/logger';
 import { statVaultItem } from '~/utils/stat-item';
@@ -11,10 +12,32 @@ export default class PullTask extends BaseTask<OptionsWithRemoteFileStat> {
 
 	async exec() {
 		try {
-			const remoteContent = await getRemoteContent(this.webdav, this.remotePath);
-			await this.vault.adapter.writeBinary(this.localPath, remoteContent, {
-				ctime: this.remote.mtime - 1000, // #1
-			});
+			const maxThroughput = (await useSettings()).maxThroughputConcurrency;
+			const maxSize = maxThroughput.enabled ? maxThroughput.value : Infinity;
+			let remoteContent: ArrayBuffer | undefined;
+
+			if (this.remote.size <= maxSize) {
+				remoteContent = await getRemoteContent(this.webdav, this.remotePath);
+				await this.vault.adapter.writeBinary(this.localPath, remoteContent, {
+					ctime: this.remote.mtime - 1000, // #1
+				});
+			} else {
+				logger.debug(`Pulling large file \`${this.remotePath}\` in chunks.`);
+				const fileEnd = this.remote.size - 1;
+				for (let byte = 0; byte < this.remote.size; byte += maxSize) {
+					const byteEnd = byte + maxSize - 1;
+					const content = (await this.webdav.getFileContents(this.remotePath, {
+						headers: {
+							Range: `bytes=${byte}-${byteEnd <= fileEnd ? byteEnd : fileEnd}`,
+						},
+					})) as BinaryLike;
+					await this.vault.adapter.appendBinary(
+						this.localPath,
+						await toArrayBuffer(content),
+						{ ctime: this.remote.mtime - 1000 },
+					);
+				}
+			}
 
 			// no race condition since we've just written it
 			const local = await statVaultItem(this.vault, this.localPath);
@@ -24,9 +47,10 @@ export default class PullTask extends BaseTask<OptionsWithRemoteFileStat> {
 				key: this.localPath,
 				local,
 				remote: this.remote,
-				baseText: isMergeablePath(this.localPath)
-					? await arrayBufferToText(remoteContent)
-					: undefined,
+				baseText:
+					isMergeablePath(this.localPath) && remoteContent
+						? await arrayBufferToText(remoteContent)
+						: undefined,
 			});
 
 			return { success: true } as const;

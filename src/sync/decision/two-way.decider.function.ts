@@ -11,12 +11,12 @@ import { isMergeablePath } from '../utils/is-mergeable-path';
 
 export function twoWayDecider(input: SyncDecisionInput): BaseTask[] {
 	const {
-		settings,
 		currentLocalStats: localStats,
 		currentRemoteStats: remoteStats,
 		records,
 		taskFactory,
 		remoteBaseDir,
+		settings,
 	} = input;
 	const mixedPath = Array.from(
 		new Set([...localStats.keys(), ...remoteStats.keys(), ...records.keys()]),
@@ -76,7 +76,6 @@ export function twoWayDecider(input: SyncDecisionInput): BaseTask[] {
 		options: { localPath: string; remotePath: string };
 		strategy: ConflictStrategy;
 		unmergeableStrategy: UnmergeableStrategy;
-		useGitStyle: boolean;
 	}) => {
 		function commonRoutes(strategy: UnmergeableStrategy | ConflictStrategy) {
 			if (strategy === UnmergeableStrategy.Skip) return;
@@ -98,11 +97,11 @@ export function twoWayDecider(input: SyncDecisionInput): BaseTask[] {
 			}
 			return false;
 		}
-		const { local, remote, options, strategy, unmergeableStrategy, useGitStyle } = params;
+		const { local, remote, options, strategy, unmergeableStrategy } = params;
 		if (strategy === ConflictStrategy.DiffMatchPatch && !isMergeablePath(local.path))
 			commonRoutes(unmergeableStrategy);
 		else if (!commonRoutes(strategy))
-			tasks.push(taskFactory.createMergeTask({ ...options, remote, local, useGitStyle }));
+			tasks.push(taskFactory.createMergeTask({ ...options, remote, local }));
 	};
 
 	// * sync files
@@ -182,7 +181,6 @@ export function twoWayDecider(input: SyncDecisionInput): BaseTask[] {
 					remote,
 					options,
 					strategy: settings.conflictStrategy,
-					useGitStyle: settings.useGitStyle,
 					unmergeableStrategy: settings.unmergeableStrategy,
 				});
 			},
@@ -241,7 +239,6 @@ export function twoWayDecider(input: SyncDecisionInput): BaseTask[] {
 					options,
 					strategy: settings.conflictStrategy,
 					unmergeableStrategy: settings.unmergeableStrategy,
-					useGitStyle: settings.useGitStyle,
 				});
 			},
 			NORECORD_REMOTE_NOLOCAL_PULL: () => {
