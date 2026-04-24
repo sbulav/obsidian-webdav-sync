@@ -9,11 +9,6 @@ import ControlsSettings from './controls';
 import DevelopmentSettings from './development';
 import FilterSettings from './filter';
 
-export enum SyncMode {
-	STRICT = 'strict',
-	LOOSE = 'loose',
-}
-
 export enum ConflictStrategy {
 	DiffMatchPatch = 'diffMatchPatch',
 	LatestTimeStamp = 'latestTimestamp',
@@ -40,7 +35,6 @@ export interface PluginSettings {
 	unmergeableStrategy: UnmergeableStrategy;
 	confirmBeforeSync: boolean;
 	confirmBeforeDeleteInAutoSync: boolean;
-	syncMode: SyncMode;
 	useFastSyncOnLocalChange: boolean;
 	filterRules: {
 		exclusionRules: GlobMatchOptions[];

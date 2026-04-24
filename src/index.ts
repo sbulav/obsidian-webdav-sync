@@ -17,12 +17,15 @@ import {
 	type PluginSettings,
 	SyncSettingTab,
 	setPluginInstance,
-	SyncMode,
 	ConflictStrategy,
 	UnmergeableStrategy,
 } from './settings';
 import { processSettings } from './settings/process';
-import { IndexedDbBaseTextStore, IndexedDbSyncStateStore } from './storage';
+import {
+	IndexedDbBaseTextStore,
+	IndexedDbSyncStateStore,
+	IndexedDbFileChunkStore,
+} from './storage';
 import { getCredential } from './utils/get-credential';
 
 function createGlobMatchOptions(expr: string) {
@@ -47,7 +50,6 @@ export default class WebDAVSyncPlugin extends Plugin {
 		unmergeableStrategy: UnmergeableStrategy.LatestTimeStamp,
 		confirmBeforeSync: true,
 		confirmBeforeDeleteInAutoSync: true,
-		syncMode: SyncMode.LOOSE,
 		filterRules: {
 			exclusionRules: [
 				'**/.git',
@@ -107,6 +109,7 @@ export default class WebDAVSyncPlugin extends Plugin {
 
 	public syncStateStore = new IndexedDbSyncStateStore();
 	public baseTextStore = new IndexedDbBaseTextStore();
+	public fileChunkStore = new IndexedDbFileChunkStore();
 	public progressService = new ProgressService(this);
 	public observabilityService = new ObservabilityService(this);
 	public webDAVService = new WebDAVService(this);
@@ -118,16 +121,20 @@ export default class WebDAVSyncPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
-		await this.syncStateStore.initialize().catch(() => undefined);
-		await this.baseTextStore.initialize().catch(() => undefined);
+		await this.syncStateStore.initialize();
+		await this.baseTextStore.initialize();
+		await this.fileChunkStore.initialize();
 		this.addSettingTab(new SyncSettingTab(this.app, this));
 		setPluginInstance(this);
 		setupCommands(this);
 		this.scheduledSyncService.start();
 	}
 
-	onunload() {
+	async onunload() {
 		setPluginInstance(null);
+		await this.syncStateStore.unload();
+		await this.baseTextStore.unload();
+		await this.fileChunkStore.unload();
 		syncCancel();
 		this.scheduledSyncService.unload();
 		this.syncSchedulerService.unload();

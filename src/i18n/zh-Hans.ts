@@ -80,12 +80,6 @@ const translation: typeof en = {
 			name: '本地变更快速同步',
 			desc: '对本地实时变更使用 fast 同步。这样更快，但在下一次普通同步前无法发现远程编辑、删除或重命名。',
 		},
-		syncMode: {
-			name: '同步模式',
-			desc: '选择严格或宽松同步模式。对于文件数量较多的用户，推荐使用宽松模式以获得更快的同步速度。在宽松模式下，名称相同且大小相等但无同步记录的文件将被视为已同步。',
-			strict: '严格',
-			loose: '宽松',
-		},
 		filters: {
 			name: '过滤器',
 			desc: '添加同步时需要忽略文件或文件夹路径',
@@ -282,8 +276,8 @@ const translation: typeof en = {
 		hoursAgo: '{{count}}小时前',
 		daysAgo: '{{count}}天前',
 		longAgo: '很久前',
-    },
-    dirSelector: {
+	},
+	dirSelector: {
 		currentPath: '当前路径：{{path}}',
 		goBack: '返回',
 		newFolder: '新建文件夹',

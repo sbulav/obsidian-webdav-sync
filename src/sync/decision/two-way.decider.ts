@@ -110,7 +110,6 @@ export default class TwoWaySyncDecider {
 
 		const decisionInput: SyncDecisionInput = {
 			settings: {
-				syncMode: this.sync.settings.syncMode,
 				conflictStrategy: this.sync.settings.conflictStrategy,
 				unmergeableStrategy: this.sync.settings.unmergeableStrategy,
 			},

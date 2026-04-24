@@ -1,6 +1,6 @@
 import { Setting } from 'obsidian';
 import t from '~/i18n';
-import { ConflictStrategy, SyncMode, UnmergeableStrategy } from '.';
+import { ConflictStrategy, UnmergeableStrategy } from '.';
 import generateSettingEntry, { UserInputType } from './generate-setting-entry';
 import BaseSettings from './settings.base';
 
@@ -123,20 +123,6 @@ export default class CommonSettings extends BaseSettings {
 					this.plugin.settings.useFastSyncOnLocalChange = value;
 					void this.plugin.saveSettings();
 				}),
-			);
-
-		new Setting(this.containerEl)
-			.setName(t('settings.syncMode.name'))
-			.setDesc(t('settings.syncMode.desc'))
-			.addDropdown((dropdown) =>
-				dropdown
-					.addOption(SyncMode.STRICT, t('settings.syncMode.strict'))
-					.addOption(SyncMode.LOOSE, t('settings.syncMode.loose'))
-					.setValue(this.plugin.settings.syncMode)
-					.onChange((value) => {
-						this.plugin.settings.syncMode = value as SyncMode;
-						void this.plugin.saveSettings();
-					}),
 			);
 
 		generateSettingEntry({

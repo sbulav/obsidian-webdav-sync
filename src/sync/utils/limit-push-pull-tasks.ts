@@ -1,6 +1,7 @@
 import type { ToggleNumericSettingsField } from '~/types';
 import PullTask from '../tasks/pull.task';
 import PushTask from '../tasks/push.task';
+import { getAndDeleteAt, getLast } from './array-utils';
 
 type ArrayOfTasks = Array<PushTask | PullTask>;
 
@@ -44,12 +45,4 @@ export default function limitPushPullTasks(
 		}
 	}
 	return res;
-}
-
-function getLast<T>(arr: Array<T>): T {
-	return arr[arr.length - 1];
-}
-
-function getAndDeleteAt<T>(arr: Array<T>, index: number): T {
-	return arr.splice(index, 1)[0];
 }

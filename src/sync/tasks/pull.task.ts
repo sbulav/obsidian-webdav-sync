@@ -5,6 +5,7 @@ import logger from '~/utils/logger';
 import { statVaultItem } from '~/utils/stat-item';
 import type { OptionsWithRemoteFileStat } from '../decision/sync-decision.interface';
 import { isMergeablePath } from '../utils/is-mergeable-path';
+import { getStdChunkSize, splitChunks } from '../utils/split-chunks';
 import { BaseTask, toTaskError } from './task.interface';
 
 export default class PullTask extends BaseTask<OptionsWithRemoteFileStat> {
@@ -13,30 +14,48 @@ export default class PullTask extends BaseTask<OptionsWithRemoteFileStat> {
 	async exec() {
 		try {
 			const maxThroughput = (await useSettings()).maxThroughputConcurrency;
-			const maxSize = maxThroughput.enabled ? maxThroughput.value : Infinity;
+			const chunkSize = getStdChunkSize(maxThroughput, 4);
+			const cache =
+				this.remote.size <= chunkSize
+					? []
+					: await this.syncRecord.getFileChunkKeys(this.remote);
+			const split = splitChunks(this.remote.size, maxThroughput, 4, cache, chunkSize);
 			let remoteContent: ArrayBuffer | undefined;
 
-			if (this.remote.size <= maxSize) {
+			if (split) {
+				logger.debug(`Pulling large file \`${this.remotePath}\` in chunks.`);
+				for (const group of split) {
+					await Promise.all(
+						group.map(async ({ start, end }) => {
+							const buffer = await toArrayBuffer(
+								(await this.webdav.getFileContents(this.remotePath, {
+									headers: { Range: `bytes=${start}-${end}` },
+								})) as BinaryLike,
+							);
+							await this.syncRecord.setFileChunk(buffer, {
+								start,
+								end,
+								...this.remote,
+							});
+						}),
+					);
+				}
+				const keys = (await this.syncRecord.getFileChunkKeys(this.remote))
+					.sort((a, b) => a.start - b.start)
+					.map(({ key }) => key);
+				for (const key of keys) {
+					const buffer = await this.syncRecord.getFileChunk(key);
+					if (!buffer) throw new Error(`File chunk not found: ${key}`);
+					await this.vault.adapter.appendBinary(this.localPath, buffer, {
+						ctime: this.remote.mtime - 1000, // #1
+					});
+				}
+				await this.syncRecord.removeFileChunk(this.remotePath);
+			} else {
 				remoteContent = await getRemoteContent(this.webdav, this.remotePath);
 				await this.vault.adapter.writeBinary(this.localPath, remoteContent, {
 					ctime: this.remote.mtime - 1000, // #1
 				});
-			} else {
-				logger.debug(`Pulling large file \`${this.remotePath}\` in chunks.`);
-				const fileEnd = this.remote.size - 1;
-				for (let byte = 0; byte < this.remote.size; byte += maxSize) {
-					const byteEnd = byte + maxSize - 1;
-					const content = (await this.webdav.getFileContents(this.remotePath, {
-						headers: {
-							Range: `bytes=${byte}-${byteEnd <= fileEnd ? byteEnd : fileEnd}`,
-						},
-					})) as BinaryLike;
-					await this.vault.adapter.appendBinary(
-						this.localPath,
-						await toArrayBuffer(content),
-						{ ctime: this.remote.mtime - 1000 },
-					);
-				}
 			}
 
 			// no race condition since we've just written it

@@ -1,4 +1,4 @@
-import type { ConflictStrategy, SyncMode, UnmergeableStrategy } from '~/settings';
+import type { ConflictStrategy, UnmergeableStrategy } from '~/settings';
 import type { RecordStatsMap, StatsMap, StatModel, FileStatModel, FolderStatModel } from '~/types';
 import { BaseTask } from '../tasks/task.interface';
 
@@ -58,7 +58,6 @@ export interface SyncDecisionInput {
 	remoteBaseDir: string;
 	taskFactory: TaskFactory;
 	settings: {
-		syncMode: SyncMode;
 		conflictStrategy: ConflictStrategy;
 		unmergeableStrategy: UnmergeableStrategy;
 	};

@@ -3,13 +3,13 @@ import localspace from 'localspace';
 import { isSub } from '~/utils/is-sub';
 import logger from '~/utils/logger';
 
-function createStorageUnavailableError(cause: unknown): Error {
+export function createStorageUnavailableError(cause: unknown): Error {
 	if (cause instanceof Error)
 		return new Error(`Sync state storage unavailable: ${cause.message}`);
 	return new Error('Sync state storage unavailable');
 }
 
-const STORAGE_NAME = 'obsidian-webdav-sync';
+export const STORAGE_NAME = 'obsidian-webdav-sync';
 export const SYNC_STATE_STORE_NAME = 'sync-state';
 export const BASE_TEXT_STORE_NAME = 'base-text';
 export const FILE_CHUNK_STORE_NAME = 'file-chunk';
@@ -22,8 +22,8 @@ export function parseKey(key: string) {
 
 export abstract class BaseStore {
 	protected readonly store: LocalSpaceInstance;
-    private initPromise: Promise<void> | undefined;
-    private readonly storeName: string;
+	private initPromise: Promise<void> | undefined;
+	private readonly storeName: string;
 
 	constructor(storeName: string) {
 		this.store = localspace.createInstance({
@@ -32,12 +32,11 @@ export abstract class BaseStore {
 			driver: [localspace.INDEXEDDB],
 			coalesceWrites: true,
 			coalesceWindowMs: 500,
-        });
+		});
 		this.storeName = storeName;
-        void this.initialize();
 	}
 
-	private async initialize() {
+	async initialize() {
 		if (this.initPromise) return await this.initPromise;
 		this.initPromise = this.store.ready().catch((error: unknown) => {
 			const storageError = createStorageUnavailableError(error);
@@ -45,6 +44,10 @@ export abstract class BaseStore {
 			throw storageError;
 		});
 		return await this.initPromise;
+	}
+
+	async unload() {
+		await this.store.destroy();
 	}
 
 	protected async run<T>(operation: string, action: () => Promise<T>): Promise<T> {
@@ -55,14 +58,14 @@ export abstract class BaseStore {
 			logger.error(`Failed to ${operation}`, error);
 			throw error;
 		}
-    }
-	
-    async removeEntry(namespace: string, path: string): Promise<void> {
+	}
+
+	async removeEntry(namespace: string, path: string): Promise<void> {
 		await this.run('delete record entry', async () => {
 			await this.store.removeItem(this.getKey(namespace, path));
 		});
 	}
-   
+
 	async removeSubDir(_namespace: string, _path: string): Promise<void> {
 		await this.run('delete record sub directory', async () => {
 			const keys = (await this.store.keys()).filter((key) => {
@@ -72,7 +75,7 @@ export abstract class BaseStore {
 			await this.store.removeItems(keys);
 		});
 	}
-   
+
 	async removeNamespace(_namespace: string): Promise<void> {
 		await this.run('clear record in a namespace', async () => {
 			const keys = (await this.store.keys()).filter(
@@ -81,7 +84,7 @@ export abstract class BaseStore {
 			await this.store.removeItems(keys);
 		});
 	}
-   
+
 	async removeAll(): Promise<void> {
 		await this.run('clear record', async () => {
 			await this.store.clear();

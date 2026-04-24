@@ -1,7 +1,7 @@
 import type { FileStatModel, FolderStatModel, StatModel } from '~/types';
 import t from '~/i18n';
 import { normalizePathToAbsolute } from '~/platform/path';
-import { ConflictStrategy, SyncMode, UnmergeableStrategy } from '~/settings';
+import { ConflictStrategy, UnmergeableStrategy } from '~/settings';
 import { hasInvalidChar } from '~/utils/has-invalid-char';
 import logger from '~/utils/logger';
 import type { SyncDecisionInput } from './sync-decision.interface';
@@ -155,8 +155,7 @@ export function twoWayDecider(input: SyncDecisionInput): BaseTask[] {
 		} else {
 			if (remote) {
 				if (local) {
-					if (settings.syncMode === SyncMode.LOOSE && remote.size === local.size)
-						caseName = 'NORECORD_REMOTE_LOCAL_RECORD';
+					if (remote.size === local.size) caseName = 'NORECORD_REMOTE_LOCAL_RECORD';
 					else caseName = 'NORECORD_REMOTE_LOCAL_CONFLICT';
 				} else caseName = 'NORECORD_REMOTE_NOLOCAL_PULL';
 			} else if (local) caseName = 'NORECORD_NOREMOTE_LOCAL_PUSH';

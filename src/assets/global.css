@@ -121,6 +121,8 @@ input.success {
 	}
 }
 
-.is-phone .numeric-toggle {
-	flex-direction: column;
+@container (max-width: 500px) {
+	.is-phone .numeric-toggle {
+		flex-direction: column;
+	}
 }

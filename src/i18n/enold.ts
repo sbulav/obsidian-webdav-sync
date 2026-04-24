@@ -78,12 +78,6 @@ export default {
 			name: 'Fast sync on local changes',
 			desc: 'Use fast sync for real-time local file changes. This is faster, but remote edits, deletes, and renames are not detected until the next normal sync.',
 		},
-		syncMode: {
-			name: 'Sync mode',
-			desc: 'Choose between strict or loose sync mode. Loose mode is recommended for users with many files for faster syncing. In loose mode, files with the same name and equal size that have no sync record will be assumed to be synced.',
-			strict: 'Strict',
-			loose: 'Loose',
-		},
 		filters: {
 			name: 'Sync filters',
 			desc: 'Add paths to filter files or folders',

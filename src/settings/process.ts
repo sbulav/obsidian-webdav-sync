@@ -105,6 +105,8 @@ export function processSettings(plugin: WebDAVSyncPlugin): void {
 			delete settings.scheduledSyncIntervalSeconds;
 		}
 
+		if ('syncMode' in settings) delete settings.syncMode;
+
 		logger.info('Migrated settings to new toggle + numeric input style.');
 		changed = true;
 	}

@@ -307,6 +307,7 @@ export class SyncEngine {
 			this.getStateKey(),
 			this.plugin.syncStateStore,
 			this.plugin.baseTextStore,
+			this.plugin.fileChunkStore,
 		);
 	}
 

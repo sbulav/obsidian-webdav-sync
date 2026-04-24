@@ -5,10 +5,6 @@ vi.mock('~/i18n', () => ({
 }));
 
 vi.mock('~/settings', () => ({
-	SyncMode: {
-		STRICT: 'strict',
-		LOOSE: 'loose',
-	},
 	ConflictStrategy: {
 		DiffMatchPatch: 'diffMatchPatch',
 		LatestTimeStamp: 'latestTimestamp',

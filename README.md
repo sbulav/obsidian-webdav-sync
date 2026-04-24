@@ -54,7 +54,6 @@ Acknowledging that WebDAV would be the most convenient DIY solution for syncing,
   - Use remote
   - Use local
   - Skip
-- 🚀 **Strict / loose sync modes** for different vault sizes
 - 📦 **Large file skipping** via configurable size threshold
 - 🔁 **Robust file handling** that doesn't mess up your notes
 - 📜 **Lightweight local database** empowers scalability and ensures performance
