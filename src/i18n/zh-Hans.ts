@@ -190,8 +190,7 @@ const translation: typeof en = {
 		showProgressButton: '显示同步进度',
 		notSyncing: '尚未开始同步',
 		progressTitle: '同步进度',
-		progressStats: '已完成: {{completed}} / {{total}} 个任务',
-		completedFilesTitle: '已完成的任务',
+		progressStats: '已完成 {{completed}} / {{total}}',
 		syncingFiles: '⌛️ 正在同步文件...',
 		awaitingConfirmation: '等待确认',
 		planningStage: {

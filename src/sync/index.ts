@@ -409,11 +409,7 @@ export class SyncEngine {
 		return {
 			totalTasks: totalDisplayableTasks.length,
 			completedTasks: allCompletedTasks.length,
-			completed: allCompletedTasks.map((task) => ({
-				taskName: getTaskName(task),
-				localPath: task.localPath,
-				remotePath: task.remotePath,
-			})),
+			completed: allCompletedTasks.map((task) => task.toJSON()),
 		};
 	}
 

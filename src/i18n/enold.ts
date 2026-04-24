@@ -189,8 +189,7 @@ export default {
 		showProgressButton: 'Show sync progress',
 		notSyncing: 'No sync currently in progress',
 		progressTitle: 'Sync progress',
-		progressStats: 'Completed: {{completed}} / {{total}} tasks',
-		completedFilesTitle: 'Completed tasks',
+		progressStats: 'Completed {{completed}} / {{total}}',
 		syncingFiles: '⌛️ Syncing files...',
 		awaitingConfirmation: 'Waiting for confirmation',
 		planningStage: {

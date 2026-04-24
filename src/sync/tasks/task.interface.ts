@@ -45,12 +45,15 @@ export abstract class BaseTask<T extends TaskOptions = TaskOptions> {
 	abstract exec(): MaybePromise<TaskResult>;
 
 	toJSON() {
-		const { localPath, remotePath } = this;
-		const taskName = getTaskName(this);
+		const path =
+			this.local && this.remote
+				? this.localPath
+				: this.remote
+					? this.remotePath
+					: this.localPath;
 		return {
-			taskName,
-			localPath,
-			remotePath,
+			taskName: getTaskName(this),
+			path,
 		};
 	}
 }

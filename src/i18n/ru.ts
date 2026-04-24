@@ -192,8 +192,7 @@ const translation: typeof en = {
 		showProgressButton: 'Показать прогресс синхронизации',
 		notSyncing: 'Синхронизация не выполняется',
 		progressTitle: 'Прогресс синхронизации',
-		progressStats: 'Выполнено: {{completed}} / {{total}} задач',
-		completedFilesTitle: 'Выполненные задачи',
+		progressStats: 'Выполнено {{completed}} / {{total}}',
 		syncingFiles: '⌛️ Синхронизация файлов...',
 		awaitingConfirmation: 'Ожидание подтверждения',
 		planningStage: {
