@@ -104,7 +104,7 @@ export default {
 			},
 		},
 		startupSync: {
-			name: 'Auto-sync on startup',
+			name: 'Startup sync',
 			desc: 'Automatically trigger a sync after startup. Set the delay after startup to automatically perform a sync in the field.',
 			placeholder: 'Enter delay (e.g. 10s, 1min)',
 		},
