@@ -25,6 +25,14 @@ export interface OptionsWithLocalFolderStat extends TaskOptions {
 	local: FolderStatModel;
 }
 
+export interface OptionsWithLocalStat extends TaskOptions {
+	local: StatModel;
+}
+
+export interface OptionsWithRemoteStat extends TaskOptions {
+	remote: StatModel;
+}
+
 export interface OptionsWithBothStats extends TaskOptions {
 	local: StatModel;
 	remote: StatModel;
@@ -39,8 +47,8 @@ export interface TaskFactory {
 	createPullTask(options: OptionsWithRemoteFileStat): BaseTask<OptionsWithRemoteFileStat>;
 	createPushTask(options: OptionsWithLocalFileStat): BaseTask<OptionsWithLocalFileStat>;
 	createMergeTask(options: OptionsWithBothFileStats): BaseTask<OptionsWithBothFileStats>;
-	createRemoveLocalTask(options: TaskOptions): BaseTask;
-	createRemoveRemoteTask(options: TaskOptions): BaseTask;
+	createRemoveLocalTask(options: OptionsWithLocalStat): BaseTask<OptionsWithLocalStat>;
+	createRemoveRemoteTask(options: OptionsWithRemoteStat): BaseTask<OptionsWithRemoteStat>;
 	createMkdirLocalTask(
 		options: OptionsWithRemoteFolderStat,
 	): BaseTask<OptionsWithRemoteFolderStat>;

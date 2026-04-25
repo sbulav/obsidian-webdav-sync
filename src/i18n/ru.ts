@@ -194,7 +194,8 @@ const translation: typeof en = {
 		progressTitle: 'Прогресс синхронизации',
 		progressStats: 'Выполнено {{completed}} / {{total}}',
 		syncingFiles: '⌛️ Синхронизация файлов...',
-		awaitingConfirmation: 'Ожидание подтверждения',
+		awaitingConfirmation: '💤 Ожидание подтверждения',
+		manualConfirmation: 'Просмотрите задачи ниже. Подтвердите выполнение выбранных задач.',
 		planningStage: {
 			preConnecting: '📋 Предварительное подключение',
 			walkingRemote: '📋 Сканирование удаленных файлов',
@@ -226,7 +227,6 @@ const translation: typeof en = {
 			removeLocalRecursively: 'Удалить локально рекурсивно',
 			removeRemote: 'Удалить удаленно',
 			removeRemoteRecursively: 'Удалить удаленно рекурсивно',
-			rename: 'Переименовать',
 			sync: 'Синхронизировать',
 			upload: 'Загрузить',
 			cleanRecord: 'Очистить запись',
@@ -240,17 +240,6 @@ const translation: typeof en = {
 			remoteDir: 'Удаленная папка: {{dir}}',
 			strategy: 'Стратегия синхронизации: {{strategy}}',
 		},
-	},
-	taskList: {
-		title: 'Список задач синхронизации',
-		instruction:
-			'Пожалуйста, просмотрите задачи ниже. Нажмите «Продолжить», чтобы выполнить выбранные задачи, или «Отмена», чтобы пропустить эту синхронизацию.',
-		execute: 'Выполнить',
-		action: 'Действие',
-		localPath: 'Локальный путь',
-		remotePath: 'Удаленный путь',
-		continue: 'Продолжить',
-		cancel: 'Отмена',
 	},
 	deleteConfirm: {
 		title: 'Подтверждение удаления локального файла',

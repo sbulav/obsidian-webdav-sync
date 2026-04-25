@@ -15,8 +15,8 @@ export default function limitPushPullTasks(
 	const sortedTasks = tasks
 		.map((task) => {
 			let size = 0;
-			if (task instanceof PullTask) size = task.options.remote.size;
-			else size = task.options.local.size;
+			if (task instanceof PullTask) size = task.remote.size;
+			else size = task.local.size;
 			return { size, task };
 		})
 		.sort((a, b) => b.size - a.size);

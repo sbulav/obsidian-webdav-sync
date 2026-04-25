@@ -191,7 +191,8 @@ export default {
 		progressTitle: 'Sync progress',
 		progressStats: 'Completed {{completed}} / {{total}}',
 		syncingFiles: '⌛️ Syncing files...',
-		awaitingConfirmation: 'Waiting for confirmation',
+		awaitingConfirmation: '💤 Waiting for confirmation',
+		manualConfirmation: 'Review the tasks below. Confirm to execute the selected tasks.',
 		planningStage: {
 			preConnecting: '📋 Pre-connecting',
 			walkingRemote: '📋 Walking remote',
@@ -223,7 +224,6 @@ export default {
 			removeLocalRecursively: 'Remove local recursively',
 			removeRemote: 'Remove remote',
 			removeRemoteRecursively: 'Remove remote recursively',
-			rename: 'Rename',
 			sync: 'Sync',
 			upload: 'Upload',
 			cleanRecord: 'Clean record',
@@ -237,17 +237,6 @@ export default {
 			remoteDir: 'Remote directory: {{dir}}',
 			strategy: 'Sync strategy: {{strategy}}',
 		},
-	},
-	taskList: {
-		title: 'Sync task list',
-		instruction:
-			'Please review the tasks below. Click "Continue" to execute the selected tasks, or "Cancel" to skip this sync.',
-		execute: 'Execute',
-		action: 'Action',
-		localPath: 'Local path',
-		remotePath: 'Remote path',
-		continue: 'Continue',
-		cancel: 'Cancel',
 	},
 	deleteConfirm: {
 		title: 'Confirm local file deletion',

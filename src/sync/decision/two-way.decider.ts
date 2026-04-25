@@ -12,8 +12,10 @@ import type {
 	OptionsWithBothStats,
 	OptionsWithLocalFileStat,
 	OptionsWithLocalFolderStat,
+	OptionsWithLocalStat,
 	OptionsWithRemoteFileStat,
 	OptionsWithRemoteFolderStat,
+	OptionsWithRemoteStat,
 	SyncDecisionInput,
 	TaskFactory,
 	TaskOptions,
@@ -94,9 +96,9 @@ export default class TwoWaySyncDecider {
 				new PushTask({ ...commonTaskOptions, ...options }),
 			createMergeTask: (options: OptionsWithBothFileStats) =>
 				new MergeTask({ ...commonTaskOptions, ...options }),
-			createRemoveLocalTask: (options: TaskOptions) =>
+			createRemoveLocalTask: (options: OptionsWithLocalStat) =>
 				new RemoveLocalTask({ ...commonTaskOptions, ...options }),
-			createRemoveRemoteTask: (options: TaskOptions) =>
+			createRemoveRemoteTask: (options: OptionsWithRemoteStat) =>
 				new RemoveRemoteTask({ ...commonTaskOptions, ...options }),
 			createMkdirLocalTask: (options: OptionsWithRemoteFolderStat) =>
 				new MkdirLocalTask({ ...commonTaskOptions, ...options }),

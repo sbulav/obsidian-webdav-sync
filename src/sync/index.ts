@@ -2,7 +2,6 @@ import type { WebDAVClient } from 'webdav';
 import { Vault } from 'obsidian';
 import type { SyncExecutionRequest } from '~/services/sync-executor.service';
 import DeleteConfirmModal from '~/components/DeleteConfirmModal';
-import TaskListConfirmModal from '~/components/TaskListConfirmModal';
 import {
 	syncRun,
 	syncCancel,
@@ -160,11 +159,10 @@ export class SyncEngine {
 					},
 				});
 				syncRun(currentRun);
-				const confirmExec = await new TaskListConfirmModal(
-					this.app,
-					displayableTasks,
-				).openAndWait();
-				if (confirmExec.confirm) tasks = [...notDisplayableTasks, ...confirmExec.tasks];
+				const confirmExec =
+					await this.plugin.progressService.confirmManualTasks(displayableTasks);
+				if (confirmExec.confirmed)
+					tasks = [...notDisplayableTasks, ...confirmExec.selectedTasks];
 				else {
 					currentRun = finalizeSyncRun(currentRun, { stage: 'cancelled' });
 					return currentRun;

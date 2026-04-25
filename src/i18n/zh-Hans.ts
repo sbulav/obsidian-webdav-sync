@@ -192,7 +192,8 @@ const translation: typeof en = {
 		progressTitle: '同步进度',
 		progressStats: '已完成 {{completed}} / {{total}}',
 		syncingFiles: '⌛️ 正在同步文件...',
-		awaitingConfirmation: '等待确认',
+		awaitingConfirmation: '💤 等待确认',
+		manualConfirmation: '请检查下面的任务，确认后执行选中的任务。',
 		planningStage: {
 			preConnecting: '📋 检查连接',
 			walkingRemote: '📋 远程扫描',
@@ -223,7 +224,6 @@ const translation: typeof en = {
 			removeLocalRecursively: '递归删除本地',
 			removeRemote: '删除远程',
 			removeRemoteRecursively: '递归删除远程',
-			rename: '重命名',
 			sync: '同步',
 			upload: '上传',
 			cleanRecord: '清理记录',
@@ -237,17 +237,6 @@ const translation: typeof en = {
 			remoteDir: '远程目录：{{dir}}',
 			strategy: '同步策略：{{strategy}}',
 		},
-	},
-	taskList: {
-		title: '同步任务列表',
-		instruction:
-			'请检查以下待执行的任务。点击"继续"将执行选中的任务，点击"取消"则跳过本次同步。',
-		execute: '执行',
-		action: '行为',
-		localPath: '本地路径',
-		remotePath: '远程路径',
-		continue: '继续',
-		cancel: '取消',
 	},
 	deleteConfirm: {
 		title: '确认删除本地文件',
