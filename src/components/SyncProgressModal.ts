@@ -1,9 +1,10 @@
 import type WebDAVSyncPlugin from '~';
 import { Modal, Setting } from 'obsidian';
 import type { FileTreeSelectionController } from '~/components/fileTree';
-import type { SyncRunSnapshot, SyncRunStage } from '~/events';
+import type { SyncRunSnapshot, SyncRunStage, SyncFailedTaskInfo } from '~/events';
 import type { BaseTask } from '~/sync/tasks/task.interface';
 import { mount as mountFileTree } from '~/components/fileTree';
+import renderFailedTasks from '~/components/render-failed-tasks';
 import { syncCancel } from '~/events';
 import t from '~/i18n';
 import { TERMINAL_STAGES } from '~/services/observability.service';
@@ -21,6 +22,7 @@ export default class SyncProgressModal extends Modal {
 	private progressStats!: HTMLDivElement;
 	private currentFile!: HTMLDivElement;
 	private confirmationDescription!: HTMLParagraphElement;
+	private failedTasksDescription!: HTMLParagraphElement;
 	private detailContainer!: HTMLDivElement;
 	private controls: HTMLElement | undefined;
 	private stage: SyncStage = 'none';
@@ -151,6 +153,11 @@ export default class SyncProgressModal extends Modal {
 			text: t('sync.manualConfirmation'),
 		});
 
+		this.failedTasksDescription = container.createEl('p', {
+			cls: 'whitespace-pre-line hidden mt-2 mb-0',
+			text: t('sync.failedDescription'),
+		});
+
 		this.detailContainer = container.createDiv({
 			cls: 'webdav-sync-confirmation-container hidden',
 		});
@@ -218,6 +225,11 @@ export default class SyncProgressModal extends Modal {
 			this.detailContainer.addClass('hidden');
 		}
 		if (this.confirmationDescription) this.confirmationDescription.addClass('hidden');
+	}
+
+	public setFailedTasks(failedTasks: Array<SyncFailedTaskInfo>): void {
+		this.failedTasksDescription.removeClass('hidden');
+		renderFailedTasks(this.detailContainer, failedTasks);
 	}
 
 	private readonly cancelConfirmation = (): void => {
