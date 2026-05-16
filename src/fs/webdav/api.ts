@@ -104,12 +104,21 @@ function convertToFileStat(
 		}
 
 	const filename = isDir ? `${path}/` : path;
+	const lastModResp = props.getlastmodified;
+
+	// https://github.com/hesprs/obsidian-webdav-sync/issues/119#issuecomment-4467822635
+	const lastMod =
+		typeof lastModResp === 'string'
+			? lastModResp
+			: typeof lastModResp === 'object'
+				? (lastModResp as { '#text': string })['#text']
+				: '';
 
 	return isDir
 		? { isDir, path: filename }
 		: {
 				isDir,
-				mtime: new Date(props.getlastmodified ?? '').valueOf(),
+				mtime: new Date(lastMod).valueOf(),
 				path: filename,
 				size: props.getcontentlength ? parseInt(props.getcontentlength) : 0,
 			};
