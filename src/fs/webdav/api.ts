@@ -88,6 +88,23 @@ function buildItemUrl(serverUrl: string, _path: string): string {
 	return `${serverUrl}${encodedPath}`;
 }
 
+function getParentPath(path: string): string {
+	const normalized = normalizeRemotePath(path);
+	if (normalized === '/') return '/';
+
+	const lastSlashIndex = normalized.lastIndexOf('/');
+	return lastSlashIndex <= 0 ? '/' : normalized.slice(0, lastSlashIndex);
+}
+
+function isMatchingStatPath(statPath: string, targetPath: string): boolean {
+	const normalizedStatPath = normalizeRemotePath(statPath);
+	const normalizedTargetPath = normalizeRemotePath(targetPath);
+	return (
+		normalizedStatPath === normalizedTargetPath ||
+		normalizedStatPath.endsWith(normalizedTargetPath)
+	);
+}
+
 function convertToFileStat(
 	stripPrefixes: Array<string>,
 	item: WebDAVResponseItem,
@@ -136,6 +153,8 @@ const PROPFIND_BODY = `<?xml version="1.0" encoding="utf-8"?>
   </prop>
 </propfind>`;
 
+const STAT_RETRY_DELAYS = [300, 700, 1500, 3000, 5000];
+
 async function propfind(
 	endpoint: string,
 	token: string,
@@ -180,21 +199,40 @@ async function propfind(
 }
 
 export async function getStat(endpoint: string, token: string, path: string): Promise<StatModel> {
-	const { items, stripPrefixes } = await propfind(
-		endpoint,
-		token,
-		buildItemUrl(endpoint, path),
-		'0',
-	);
-	const normalizedTargetPath = normalizeRemotePath(path);
+	let lastError: unknown;
 
-	for (const item of items) {
-		const stat = convertToFileStat(stripPrefixes, item);
-		if (!stat) continue;
-		if (normalizeRemotePath(stat.path) === normalizedTargetPath) return stat;
+	for (let attempt = 0; attempt <= STAT_RETRY_DELAYS.length; attempt++) {
+		try {
+			const { items, stripPrefixes } = await propfind(
+				endpoint,
+				token,
+				buildItemUrl(endpoint, path),
+				'0',
+			);
+
+			for (const item of items) {
+				const stat = convertToFileStat(stripPrefixes, item);
+				if (!stat) continue;
+				if (isMatchingStatPath(stat.path, path)) return stat;
+			}
+
+			lastError = new Error(`WebDAV stat not found for ${path}`);
+		} catch (error) {
+			lastError = error;
+		}
+
+		const delay = STAT_RETRY_DELAYS[attempt];
+		if (delay !== undefined) await sleep(delay);
 	}
 
-	throw new Error(`WebDAV stat not found for ${path}`);
+	try {
+		const parentContents = await getDirectoryContents(endpoint, token, getParentPath(path));
+		for (const stat of parentContents) if (isMatchingStatPath(stat.path, path)) return stat;
+	} catch (error) {
+		lastError = error;
+	}
+
+	throw lastError ?? new Error(`WebDAV stat not found for ${path}`);
 }
 
 export async function getDirectoryContents(
